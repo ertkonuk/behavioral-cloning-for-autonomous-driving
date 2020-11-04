@@ -1,5 +1,5 @@
 # . . GPUtil for memory management
-import GPUtil
+import platform
 import numpy as np
 import ntpath
 import os
@@ -8,7 +8,9 @@ import cv2
 import random
 import argparse
 
-
+# . . do not import on MacOSX
+if platform.system() is not 'Darwin':
+    import GPUtil
 # . . parse the command line parameters
 def parse_args():
 
