@@ -6,6 +6,37 @@ import os
 # . . opencv
 import cv2
 import random
+import argparse
+
+
+# . . parse the command line parameters
+def parse_args():
+
+    parser = argparse.ArgumentParser(description='physics informed neural networks for 2D AWE solutions.')   
+    # . . data directory
+    default_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) +'/data/'
+    parser.add_argument('--datapath',     type=str,   default=default_dir, help='data path')
+    # . . hyperparameters
+    parser.add_argument('--lr',           type=float, default=5e-4,  help='learning rate')
+    parser.add_argument('--batch_size',   type=int,   default=32,    help='training batch size')
+    parser.add_argument('--train_size',   type=float, default=0.8,   help='fraction of grid points to train')
+
+    # . . training parameters
+    parser.add_argument('--epochs',       type=int,   default=100,   help='number of epochs to train')
+
+    # . . parameters for early stopping
+    parser.add_argument('--patience',     type=int,   default=5,      help='number of epochs to wait for improvement')
+    parser.add_argument('--min_delta',    type=float, default=0.001,  help='min loss function reduction to consider as improvement')
+    
+    # . . parameters for data loaders
+    parser.add_argument('--num_workers',    type=int,  default=0,      help='number of workers to use inf data loader')
+    parser.add_argument('--pin_memory' ,    type=bool, default=False,  help='use pin memory for faster cpu-to-gpu transfer')
+
+    # . . parse the arguments
+    args = parser.parse_args()
+
+    return args
+
 
 def gpuinfo(msg=""):
     print("------------------")
