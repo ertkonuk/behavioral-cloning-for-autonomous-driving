@@ -114,9 +114,9 @@ class BatchMetrics(Callback):
 
 # . . saves the best model during the training and returns it
 class ReturnBestModel(Callback):
-    def __init__(self, monitor='valid_loss', min_delta=0, skip=1, path='models/',):
+    def __init__(self, monitor='valid_loss', min_delta=0, skip=1, reset=True, path='models/',):
         # . . first run?
-        self.reset = True
+        self.reset = reset
         # . . watch the monitor
         self.monitor = monitor 
         # . . minimum loss reduction to be considered as improvement
@@ -128,27 +128,26 @@ class ReturnBestModel(Callback):
         self.best_loss_epoch = 0
         # . . set the path
         self.path = path
+        # . . set the best model path
+        self.bestmodelpath = self.path + '/best_model.pt'
 
         # . . call the parent(abstract)
         super(ReturnBestModel, self).__init__()
 
-        # . . create the folder
-        if not os.path.exists(self.path):
-            os.makedirs(self.path)            
-
     # . . save the trainable model parameters
     def save_model(self, model):
-        torch.save(model.state_dict(), self.path+'/best_model.pt')
+        torch.save(model.state_dict(), self.bestmodelpath)
 
     # . . load the best model (weights)
     def load_model(self, model):
-        model.load_state_dict(torch.load(self.path+'/best_model.pt'))
+        model.load_state_dict(torch.load(self.bestmodelpath))
 
     def on_train_begin(self, logs=None, model=None):
-        if self.reset: self.best_loss = 1e15
-        best_model_file = self.path+'/best_model.pt'
-        if os.path.exists(best_model_file):
-            os.remove(best_model_file)
+        if self.reset: 
+            self.best_loss = 1e15
+            # . . delete the best model file: ugly use of ternaries!
+            if os.path.exists(self.bestmodelpath): os.remove(self.bestmodelpath)
+            if not os.path.exists(self.path): os.makedirs(self.path)
 
     def on_epoch_end(self, epoch, logs=None, model=None):
         current_loss = logs.get(self.monitor)
