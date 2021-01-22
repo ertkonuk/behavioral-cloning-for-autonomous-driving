@@ -1,3 +1,6 @@
+# . . these callbacks are inspired by the torchsample project
+# . . see the link for more:
+# . . https://github.com/ncullen93/torchsample
 import torch 
 import numpy as np
 import datetime

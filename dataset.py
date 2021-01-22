@@ -31,7 +31,7 @@ class Dataset(Dataset):
         # . . probability of fliping an image
         pflip = 0.5
         # . . correct steering for left and right directions
-        steering_correction = 0.25
+        steering_correction = 0.4
         # . . read and correct the steering for the left and right cameras 
         img_center, steering_center = utils.augment(center,steering, imsize, pflip)
         img_left  , steering_left   = utils.augment(left  ,steering + steering_correction, imsize, pflip)

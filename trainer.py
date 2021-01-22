@@ -7,6 +7,9 @@ import utils
 # . . private utilities: do not call from the main program
 from _utils import _find_optimizer
 
+# . . experimental functionality: mixed precision training with Nvidia Apex 
+# . . and automatic mixed precision (amp)
+from apex import amp
 
 
 class Trainer(object):
@@ -48,6 +51,8 @@ class Trainer(object):
             else:
                 self.criterion = criterion
 
+            # . . initialize the mixed precision training
+            self.model, self.optim_pde = amp.initialize(self.model, self.optimizer, opt_level="O0")
     # . . use if you want to change the optimizer 
     # . . to do: implement
     def recompile(self, optimizer, callbacks=None): pass
@@ -112,7 +117,10 @@ class Trainer(object):
                     loss = self.criterion(angle, steering.unsqueeze(1))
 
                     # . . backpropagate the loss
-                    loss.backward()
+                    #loss.backward()
+                    # . . backpropogate the scaled physics loss
+                    with amp.scale_loss(loss, self.optimizer) as scaled_loss:
+                        scaled_loss.backward()
 
                     # . . update weights
                     self.optimizer.step()
