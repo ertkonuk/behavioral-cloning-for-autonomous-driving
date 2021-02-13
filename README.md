@@ -1,4 +1,4 @@
-# behavioral-cloning-for-autonomous-driving
+# behavioral cloning for autonomous driving
 A PyTorch implementation and modification of methods and ideas presented in NVIDIA's "End to end Learning for Self-Driving Cars" paper.
 
 
